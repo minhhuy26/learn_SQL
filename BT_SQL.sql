@@ -23,7 +23,13 @@ select*from students;
 update students
 set major = 'CNTT'
 where students_id in(8,9);
+select*from students;
+
+insert into students (name,major,age) value('abc','xyz',null);
+
 select*from students
+where age is not null
+order by major asc
 
 
 
