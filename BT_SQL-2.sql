@@ -44,15 +44,18 @@ insert into sales (sale_id,employee_id,sale_amount,sale_date) values
 (04,3,12000000,'2026-06-13'),
 (05,5,24000000,'2026-07-19');
 -- Tính tổng doanh thu từ tất cả các giao dịch.
+explain analyze
 select SUM(sale_amount)
 from sales;
 -- Tìm doanh thu trung bình của nhân viên trong phòng ban "IT".
+explain analyze
 select avg(s.sale_amount) as doanh_thu_tb
 from employees as e
 join sales as s
 on s.employee_id = e.employee_id
 where e.department = 'IT';
 -- Liệt kê tất cả các nhân viên chưa thực hiện giao dịch nào.
+explain analyze
 select*
 from employees as e
 left join sales as s
@@ -73,7 +76,7 @@ create table assignments (
     foreign key(employee_id) references employees(employee_id),
     foreign key(project_id) references projects(project_id)
 );
-select*from assignments;
+
 -- 3 dự án cho bảng Projects.
 insert into projects (project_id, project_name, department) values
 (1, 'Website ban hang', 'IT'),
@@ -87,6 +90,7 @@ insert into Assignments (assignment_id, employee_id, project_id) values
 (4, 3, 1),
 (5, 2, 2);
 -- Lấy danh sách nhân viên và dự án mà họ tham gia.
+explain analyze
 select e.name,e.department,p.project_id,p.project_name
 from employees as e
 join assignments as a
@@ -94,45 +98,51 @@ on a.employee_id = e.employee_id
 join projects as p
 on p.project_id = a.project_id;
 -- Liệt kê các nhân viên không tham gia dự án nào.
+explain analyze
 select *
 from employees as e
 left join assignments as a
 on a.employee_id = e.employee_id
 where a.project_id is null;
 -- Tìm số lượng nhân viên trong mỗi dự án.
-select count(e.employee_id) as so_luong_nv,p.project_id,p.project_name
-from employees as e
-join assignments as a
-on a.employee_id = e.employee_id
-join projects as p
+explain analyze
+select count(a.employee_id) as so_luong_nv,p.project_id,p.project_name
+from projects as p          
+left join assignments as a
 on p.project_id = a.project_id
 group by p.project_id,p.project_name;
 
 -- B4
 -- Với bảng Employees, thực hiện:
 -- Lấy thông tin nhân viên có lương cao nhất.
+explain analyze
 select *
 from employees
 order by salary desc
 limit 1;
 -- Lấy danh sách nhân viên thuộc phòng ban "IT" sắp xếp theo tuổi giảm dần.
+explain analyze
 select *
 from employees
 where department = 'IT'
 order by age desc;
 -- Tìm nhân viên có lương nằm trong khoảng từ 5,000.00 đến 10,000.00.
+explain analyze
 select *
 from employees
 where salary between 5000000 and 10000000;
 -- Với bảng Sales, thực hiện:
 -- Lấy 3 giao dịch có giá trị cao nhất.
+explain analyze
 select *
 from sales
 order by sale_amount desc
 limit 3;
 -- Tìm tất cả các giao dịch được thực hiện trong tháng hiện tại.
+explain analyze
 select*
 from sales
-where month(sale_date)=10 and year(sale_date)=2026;
+where sale_date between '2026-10-01' and '2026-10-31';
+
 
 
